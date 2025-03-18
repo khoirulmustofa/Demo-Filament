@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Shop\Order;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -22,9 +23,11 @@ class Dashboard extends BaseDashboard
                         Select::make('businessCustomersOnly')
                             ->boolean(),
                         DatePicker::make('startDate')
-                            ->maxDate(fn (Get $get) => $get('endDate') ?: now()),
+                            ->minDate(Order::min('created_at')) // Mengambil tanggal paling awal
+                            ->maxDate(fn(Get $get) => $get('endDate') ?: now()), // Maksimal hingga endDate atau hari ini
+
                         DatePicker::make('endDate')
-                            ->minDate(fn (Get $get) => $get('startDate') ?: now())
+                            ->minDate(fn(Get $get) => $get('startDate') ?: now())
                             ->maxDate(now()),
                     ])
                     ->columns(3),
